@@ -7,7 +7,6 @@ Anda dapat mengunduh dataset lengkap melalui tautan berikut:
 
 Setelah diunduh, ekstrak file tersebut dan letakkan di dalam folder `dataset/`sesuai struktur direktori di bawah ini.
 
-├── dataset/                 # Folder penyimpanan dataset (.npy)
-│   ├── pukul/
-│   ├── redam/
-│   └── netral/
+dataset/pukul
+dataset/redam
+dataset/netral

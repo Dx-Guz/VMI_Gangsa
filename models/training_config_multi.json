@@ -1,0 +1,17 @@
+{
+  "model_path": "models/gangsa_bilstm_multi.h5",
+  "actions": [
+    "pukul",
+    "redam",
+    "netral"
+  ],
+  "sequence_length": 15,
+  "feature_dim": 128,
+  "epochs": 50,
+  "batch_size": 16,
+  "test_ratio": 0.2,
+  "val_ratio": 0.2,
+  "random_seed": 42,
+  "best_val_accuracy": 0.0,
+  "best_val_loss": 0.17576360702514648
+}

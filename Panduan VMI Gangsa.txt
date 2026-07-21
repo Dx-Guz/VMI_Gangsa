@@ -1,0 +1,98 @@
+================================================================================
+PANDUAN MENJALANKAN SISTEM VMI GANGSA BALI
+================================================================================
+Proyek: Perancangan Model Pengenalan Gerak Tangan Menggunakan MediaPipe dan BiLSTM
+Penulis: Kadek Agus Raditya Adi Dharma (2201010709)
+================================================================================
+
+📋 PRASYARAT (REQUIREMENTS)
+--------------------------------------------------------------------------------
+1. Python versi 3.10 - 3.12 (Direkomendasikan 3.12)
+2. Webcam RGB standar (Built-in laptop atau eksternal)
+3. Koneksi internet (hanya diperlukan saat instalasi dependensi pertama kali)
+4. Spesifikasi Minimal: CPU Dual-Core (i3 Gen 10 ke atas), RAM 8 GB
+LANGKAH 1: INSTALASI DEPENDENSI
+--------------------------------------------------------------------------------
+1. Buka Terminal / Command Prompt di folder utama proyek.
+2. Buat virtual environment (opsional tapi sangat disarankan):
+   > python -m venv venv
+   > venv\Scripts\activate      (Windows)
+   > source venv/bin/activate   (Mac/Linux)
+
+3. Install library yang diperlukan:
+   > pip install tensorflow==2.19.1 keras==3.14.1 mediapipe==0.10.14
+   > pip install opencv-python==4.12.0.88 numpy pygame scikit-learn matplotlib seaborn
+
+   ATAU cukup jalankan:
+   > pip install -r requirements.txt
+
+LANGKAH 2: PASTIKAN STRUKTUR FILE LENGKAP
+--------------------------------------------------------------------------------
+Sebelum menjalankan instrumen, pastikan sudah ada:
+1. Folder `models/` berisi file `gangsa_bilstm_multi.h5` (Model yang sudah dilatih).
+2. Folder `sound/` berisi 10 file audio (bilah1.wav s.d. bilah10.wav).
+   (Jika file audio belum ada, sistem akan tetap berjalan tapi tanpa suara).
+
+LANGKAH 3: MENJALANKAN INSTRUMEN (REAL-TIME INFERENCE)
+--------------------------------------------------------------------------------
+1. Jalankan file utama:
+   > python instrument_main.py
+
+2. Jendela kamera akan terbuka. Pastikan kedua tangan Anda terlihat oleh kamera.
+3. Tunggu hingga muncul teks "Inference dimulai" di console.
+
+CARA BERINTERAKSI DENGAN INSTRUMEN
+--------------------------------------------------------------------------------
+- MEMUKUL (Tangan Kanan):
+  Arahkan ujung jari telunjuk tangan kanan ke zona atas (Strike Zone) pada bilah 
+  virtual. Tahan posisi selama ~130ms (4 frame) hingga kotak berubah KUNING, 
+  lalu kotak akan berubah HIJAU dan suara akan keluar. Kotak akan berubah BIRU 
+  (Ringing) setelahnya.
+
+- MEREDAM NORMAL (Tangan Kiri):
+  Arahkan jari telunjuk tangan kiri ke zona bawah (Damp Zone) pada bilah yang 
+  sedang diam (Abu-abu). Model AI akan mendeteksi gestur "redam" dan kotak akan 
+  berkedip ORANYE.
+
+- SMART INSTANT REDAM / DOUBLE STROKE (Tangan Kiri):
+  Saat bilah sedang berwarna BIRU (Ringing/berbunyi), sentuh zona bawah bilah 
+  yang sama dengan tangan kiri. Suara akan langsung berhenti (fadeout 50ms), 
+  kotak berkedip MAGENTA, dan bilah siap dipukul ulang secara instan.
+
+- KELUAR:
+  Tekan tombol 'Q' pada keyboard untuk menutup aplikasi dengan aman.
+
+🔄 LANGKAH 4: MELATIH ULANG MODEL (OPSIONAL)
+--------------------------------------------------------------------------------
+Jika Anda ingin merekam dataset baru atau melatih ulang model:
+1. Rekam dataset gestur:
+   > python recorder.py
+   (Data akan tersimpan di folder `dataset/pukul/`, `redam/`, `netral/`)
+
+2. Latih model:
+   > python train_multi.py
+   (Model terbaik akan otomatis tersimpan di `models/gangsa_bilstm_multi.h5`)
+
+TROUBLESHOOTING (MASALAH UMUM)
+--------------------------------------------------------------------------------
+Error: "No such file or directory: 'models/gangsa_bilstm_multi.h5'"
+Solusi: Pastikan file model sudah dipindahkan ke dalam folder `models/`.
+
+Error: "Gagal load sound/bilahX.wav"
+Solusi: Pastikan folder `sound/` berisi file audio dengan nama yang sesuai 
+	(bilah1.wav sampai bilah10.wav). Format harus .wav atau .ogg.
+
+Webcam tidak terdeteksi / Layar hitam:
+Solusi: Cek izin akses kamera (Camera Privacy Settings di Windows/Mac). 
+   	Jika menggunakan laptop eksternal, pastikan indeks kamera di kode 
+   	`cv2.VideoCapture(0)` sudah sesuai (coba ubah ke 1 atau 2).
+
+FPS sangat rendah (< 15 FPS):
+Solusi: Tutup aplikasi berat di latar belakang (browser, video player). 
+   	Pastikan resolusi webcam tidak terkunci di 1080p (sistem otomatis meminta 
+   	640x360, tapi beberapa webcam butuh penyesuaian manual di pengaturan OS).
+
+Suara tidak keluar / Terlalu pelan:
+Solusi: Cek volume master OS Anda. Pastikan file audio di folder `sound/` 
+   	tidak korup. Sistem sudah dilengkapi auto-reset volume channel untuk mencegah 
+   	bug volume turun akibat efek fadeout.
